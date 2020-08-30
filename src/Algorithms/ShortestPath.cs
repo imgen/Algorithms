@@ -1,0 +1,6 @@
+﻿namespace Algorithms
+{
+    class ShortestPath
+    {
+    }
+}
