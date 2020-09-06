@@ -13,24 +13,6 @@ namespace Algorithms
             return solutions;
         }
 
-        public static List<List<int>> FindLongestAscendingSequenceDynamically(int[] a)
-        {
-            var solutionsWithCurrentElement = new List<List<int>>();
-            var solutionsWithoutCurrentElement = new List<List<int>>();
-            FindLongestAscendingSequenceDynamically(a, 
-                a.Length - 1, 
-                solutionsWithCurrentElement, 
-                solutionsWithoutCurrentElement
-            );
-            var allSolutions = solutionsWithCurrentElement
-                    .Concat(solutionsWithoutCurrentElement)
-                    .ToList();
-
-            var maxSolutionCount = allSolutions.Select(x => x.Count).Max();
-            var allValidSolutions = allSolutions.Where(x => x.Count == maxSolutionCount).ToList();
-            return allValidSolutions;
-        }
-
         public static void TestFindLongestAscendingSequence()
         {
             Console.WriteLine("Testing FindLongestAscendingSequence...");
@@ -43,10 +25,10 @@ namespace Algorithms
 
             Console.WriteLine("Testing FindLongestAscendingSequenceDynamically...");
             sequence = new[] { 1, 3, 2, 6, 1, 7, 9 };
-            solutions = FindLongestAscendingSequenceDynamically2(sequence);
+            solutions = FindLongestAscendingSequenceDynamically(sequence);
             PrintSolutions(false);
             sequence = new[] { 7, 6, 6, 5, 4, 3, 2, 1 };
-            solutions = FindLongestAscendingSequenceDynamically2(sequence);
+            solutions = FindLongestAscendingSequenceDynamically(sequence);
             PrintSolutions(false);
 
             void PrintSolutions(bool solutionUsesIndex = true)
@@ -57,7 +39,9 @@ namespace Algorithms
                 foreach (var solution in solutions)
                 {
                     Console.WriteLine($"The {solutionIndex++}th solution is:");
-                    var solutionWithWeight = solution.Select(x => solutionUsesIndex? sequence[x] : x).ToList();
+                    var solutionWithWeight = solution
+                        .Select(x => solutionUsesIndex? sequence[x] : x)
+                        .ToList();
                     solutionWithWeight.PrintOut();
                 }
             }
@@ -122,7 +106,7 @@ namespace Algorithms
             }
         }
 
-        private static List<List<int>> FindLongestAscendingSequenceDynamically2(int[] a)
+        private static List<List<int>> FindLongestAscendingSequenceDynamically(int[] a)
         {
             var solutionsWithCurrentElement = new List<List<int>>();
             var solutionsWithoutCurrentElement = new List<List<int>>();
@@ -170,59 +154,6 @@ namespace Algorithms
                 .Concat(solutionsWithoutCurrentElement)
                 .Where(x => x.Count == maxLength)
                 .ToList();
-
-            static int GetMaxSequenceLength(List<List<int>> solutions) =>
-                solutions.Any() ? solutions[0].Count : 0;
-        }
-
-        private static void FindLongestAscendingSequenceDynamically(int[] a,
-            int index,
-            List<List<int>> solutionsWithCurrentElement,
-            List<List<int>> solutionsWithoutCurrentElement)
-        {
-            if (index < 0)
-            {
-                return;
-            }
-
-            var previousSolutions = solutionsWithCurrentElement
-                .Concat(solutionsWithoutCurrentElement).ToList();
-            solutionsWithCurrentElement.Clear();
-            solutionsWithoutCurrentElement.Clear();
-            foreach (var solution in previousSolutions)
-            {
-                if (a[index] < solution.First()) // Can take this element, take it, form a new solution
-                {
-                    var newSolution = solution.Prepend(a[index]).ToList();
-                    UpdateSolution(solutionsWithCurrentElement, newSolution);
-                }
-
-                UpdateSolution(solutionsWithoutCurrentElement, solution);
-            }
-
-            if (!solutionsWithCurrentElement.Any())
-            {
-                solutionsWithCurrentElement.Add(new List<int> { a[index] });
-            }
-
-            FindLongestAscendingSequenceDynamically(
-                    a,
-                    index - 1,
-                    solutionsWithCurrentElement,
-                    solutionsWithoutCurrentElement
-                );
-
-            static void UpdateSolution(List<List<int>> solutions, List<int> solution)
-            {
-                if (solution.Count > GetMaxSequenceLength(solutions))
-                {
-                    solutions.Clear();
-                }
-                if (solution.Count >= GetMaxSequenceLength(solutions))
-                {
-                    solutions.Add(solution);
-                }
-            }
 
             static int GetMaxSequenceLength(List<List<int>> solutions) =>
                 solutions.Any() ? solutions[0].Count : 0;

@@ -15,5 +15,21 @@ namespace Algorithms
 
             Console.WriteLine();
         }
+
+        public static TSource FirstOrDefault<TSource>(
+            this IEnumerable<TSource> source,
+            Func<TSource, bool> predicate, 
+            TSource defaultValue)
+        {
+            foreach(var item in source)
+            {
+                if (predicate(item))
+                {
+                    return item;
+                }
+            }
+
+            return defaultValue;
+        }
     }
 }

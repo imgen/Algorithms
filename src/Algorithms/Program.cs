@@ -4,7 +4,7 @@
     {
         static void Main(string[] args)
         {
-            LongestAsendingSequence.TestFindLongestAscendingSequence();
+            LongestCommonSubsequence.TestFindLongestCommonSubsequence();
         }
     }
 }
