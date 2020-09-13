@@ -4,13 +4,15 @@ using System.Linq;
 
 namespace Algorithms
 {
-    public class EditDistance
+    public static class EditDistance
     {
         private static List<List<(int first, int second)>> FindAllCommonSubsequenceDynamically(string a, string b)
         {
+            var swapped = false;
             if (a.Length > b.Length)
             {
                 (a, b) = (b, a);
+                swapped = true;
             }
             var occuranceMap = BuildOccuranceMap(b);
 
@@ -23,7 +25,9 @@ namespace Algorithms
                     var indices = FindIndices(a[i], solution.Last().second);
                     foreach(var index in indices)
                     {
-                        var newSolution = solution.Append((first: i, second: index)).ToList();
+                        var newSolution = solution
+                            .Append(GetIndexPair(i, index))
+                            .ToList();
                         newSolutions.Add(newSolution);
                     }
                 }
@@ -32,7 +36,7 @@ namespace Algorithms
                 {
                     var newSolutionOfCurrentChar = new List<(int first, int second)>
                     {
-                        (first: i, second: index2)
+                        GetIndexPair(i, index2)
                     };
                     newSolutions.Add(newSolutionOfCurrentChar);
                 }
@@ -62,14 +66,24 @@ namespace Algorithms
                     .Where(i => lastIndex is null || i > lastIndex.Value)
                     .ToList();
             }
+
+            (int first, int second) GetIndexPair(int first, int second) =>
+                swapped ? (second, first) : (first, second);
         }
 
         public static void TestCalculateEditDistance()
         {
-            var a = "mabc";
-            var b = "ambxcde";
-            int editDistance = CalculateEditDistance(a, b);
-            Console.WriteLine($"The edit distance for {a} and {b} is {editDistance}");
+            TestCalculateEditDistance("xyzabc", "abcde");
+            TestCalculateEditDistance("mabc", "ambxcde");
+            TestCalculateEditDistance("abc", "ambxcde");
+            TestCalculateEditDistance("uvwxyzabc", "abcdefghi");
+
+            static void TestCalculateEditDistance(string a, string b)
+            {
+                int editDistance = CalculateEditDistance(a, b);
+                Console.WriteLine($"The edit distance for {a} and {b} is {editDistance}");
+                Console.WriteLine(Environment.NewLine);
+            }
         }
 
 

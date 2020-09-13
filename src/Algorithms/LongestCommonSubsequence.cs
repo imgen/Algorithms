@@ -108,6 +108,10 @@ namespace Algorithms
 
             void PrintSolutions(bool solutionUsesIndex = true)
             {
+                if (sequenceA.Length > sequenceB.Length)
+                {
+                    (sequenceA, sequenceB) = (sequenceB, sequenceA);
+                }
                 Console.WriteLine($"Found {solutions.Count} solutions");
                 Console.WriteLine($"The solutions for the longest common subsequence are as below:\r\n");
                 int solutionIndex = 1;
