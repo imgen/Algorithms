@@ -102,11 +102,11 @@ namespace Algorithms
                 var validNewSolutions = newSolutions
                     .Except(subOptimalNewSolutions);
                 solutions.AddRange(validNewSolutions);
-                RemoveSuboptimalSolutions();
+                RemoveImpossibleSolutions();
                 newSolutions.Clear();
             }
 
-            Console.WriteLine($"We found {solutions.Count} common subsequences for {a} and {b}. These are as below:");
+            Console.WriteLine($"We found {solutions.Count} common subsequences. These are as below:");
             //PrintCommonSubsequences(solutions);
 
             var allValidSolutions = solutions.Where(x => x.GetFullEditDistance() == editDistance)
@@ -156,12 +156,12 @@ namespace Algorithms
                 }
             }
 
-            void RemoveSuboptimalSolutions()
+            void RemoveImpossibleSolutions()
             {
-                var subOptimalSolutions = solutions
+                var impossibleSolutions = solutions
                     .Where(x => x.GetBestPossibleEditDistance() > editDistance)
                     .ToList();
-                solutions = solutions.Except(subOptimalSolutions).ToList();
+                solutions = solutions.Except(impossibleSolutions).ToList();
             }
 
             List<int> FindIndices(char value, int? lastIndex = null)
