@@ -180,13 +180,7 @@ namespace Algorithms
             // TODO: Further remove impossible ones
             void RemoveImpossibleSolutionsAtElement(int i)
             {
-                var impossibleSolutions = solutions
-                    .Where(x => x.GetBestPossibleEditDistance() > editDistance)
-                    .ToList();
-                foreach (var impossibleSolution in impossibleSolutions)
-                {
-                    solutions.Remove(impossibleSolution);
-                }
+                
             }
 
             List<int> FindIndices(char value, int? lastIndex = null)
@@ -329,6 +323,45 @@ namespace Algorithms
             int bestLeftOverDistance = Math.Abs(firstDistance - secondDistance);
             _bestPossibleFullEditDistance = GetPartialEditDistance() + bestLeftOverDistance;
             return _bestPossibleFullEditDistance;
+        }
+
+        private readonly Dictionary<int, int> _bestPossibleDistanceFromIndexMap = new Dictionary<int, int>();
+        public int GetBestPossibleEditDistanceFromIndex(int index)
+        {
+            if (_bestPossibleDistanceFromIndexMap.ContainsKey(index))
+            {
+                return _bestPossibleDistanceFromIndexMap[index];
+            }
+            var startIndex = LastCommonChars.FirstEndIndex + 1;
+            for (int i = startIndex; i < A.Length; i++)
+            {
+                GetBestPossibleEditDistanceAtIndex(i);
+            }
+
+            for (int i = startIndex; i < A.Length; i++)
+            {
+                var bestPossibleDistance = _bestPossibleDistanceAtIndexMap.Keys
+                    .Where(x => x >= startIndex)
+                    .Min(x => _bestPossibleDistanceAtIndexMap[x]);
+                _bestPossibleDistanceFromIndexMap[bestPossibleDistance] = bestPossibleDistance;
+            }
+
+            return _bestPossibleDistanceAtIndexMap[index];
+        }
+
+        private readonly Dictionary<int, int> _bestPossibleDistanceAtIndexMap = new Dictionary<int, int>();
+        public int GetBestPossibleEditDistanceAtIndex(int index)
+        {
+            if (_bestPossibleDistanceAtIndexMap.ContainsKey(index))
+            {
+                return _bestPossibleDistanceAtIndexMap[index];
+            }
+            var lastCommonChars = LastCommonChars;
+            int distanceFromFirstEnd = index - 1 - lastCommonChars.FirstEndIndex;
+            var firstDistanceAtI = A.Length - 1 - index;
+            var secondDistanceAtI = B.Length - 1 - lastCommonChars.SecondEndIndex;
+            var bestPossibleDistance = distanceFromFirstEnd + Math.Abs(firstDistanceAtI - secondDistanceAtI);
+            return _bestPossibleDistanceAtIndexMap[index] = bestPossibleDistance;
         }
 
         private int GetEditDistance(CommonSubsequence commonSubsequence, CommonConsecutiveChars newCommonChars)
