@@ -21,33 +21,33 @@ namespace Algorithms
             //TestCalculateEditDistance("abc", "ambxcde");
             //TestCalculateEditDistance("uvwxyzabc", "abmncd");
             //TestCalculateEditDistance("uvwxyzabc", "amnobcdefghi");
-            //TestCalculateEditDistance("aaaaaaaaaaaaaaaaaaaaaaaXaaaaaaaaaaaaaaaaaaaaaaaaaaa", "aaaaaaXaaaaaaaaaaaaaaaaXaaaaaaaaaaaaaaaaaaaaXaaaaaaX");
-            //TestCalculateEditDistance("abc*efghijklm---nopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLM+++NOPQRSTU*WXYZ");
-            //TestCalculateEditDistance("aaaaaaaaaaaaaaaaaaaaaaabccccccbaaaaaaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaaaaaaaaaaabccccccbaaaaaaaaaaaaaaaaaa");
-            //TestCalculateEditDistance(
-            //    "CGICNWFJZOWBDEVORLYOOUHSIPOICMSOQIUBGSDIROYOMJJSLUPVRBNOOPAHMPNGQXHCPSLEYZEYSDGF",
-            //    "TBYHUADAJRXTDDKWMPYKNQFMGBOXJGNLOGIKTLKVUKREEEVZMTCJVUZSHNRZKGRQOXMBZYGBNDFHDVLM"
-            //);
-            //TestCalculateEditDistance(
-            //    "NTBFKWGUYSLYRMMPSXNYXAZNZFJIPJDMNPZNLPEEYEONABFCZEZYVGCJBFMGWKQPTTGJDLKKQYJZYFSL",
-            //    "PEDWJMTVXVGGCLSTOOQEACZJNOVUYXPQGIRAPHFWAESSZKHKGKUEEGVWZXVFJWLQBUBOJMHLEHGKWYTN"
-            //);
-            //TestCalculateEditDistance(
-            //    "RPXZTOSEPHWYBYSOOAKMOOJRSSFHENHDVHOIKVNXMFAEXXTBNPNFPTFGNUPLKDWRSUQYWAUVMNVYJZQL",
-            //    "MFKSTCDHEPTSMYNDRSNJZOULCCIUXZDCGQZRSRYEODXKNBGBBKSPPCQHJYUSCKMJZBPUBLLXPRCQJYRV"
-            //);
+            TestCalculateEditDistance("aaaaaaaaaaaaaaaaaaaaaaaXaaaaaaaaaaaaaaaaaaaaaaaaaaa", "aaaaaaXaaaaaaaaaaaaaaaaXaaaaaaaaaaaaaaaaaaaaXaaaaaaX");
+            TestCalculateEditDistance("abc*efghijklm---nopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLM+++NOPQRSTU*WXYZ");
+            TestCalculateEditDistance("aaaaaaaaaaaaaaaaaaaaaaabccccccbaaaaaaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaaaaaaaaaaabccccccbaaaaaaaaaaaaaaaaaa");
+            TestCalculateEditDistance(
+                "CGICNWFJZOWBDEVORLYOOUHSIPOICMSOQIUBGSDIROYOMJJSLUPVRBNOOPAHMPNGQXHCPSLEYZEYSDGF",
+                "TBYHUADAJRXTDDKWMPYKNQFMGBOXJGNLOGIKTLKVUKREEEVZMTCJVUZSHNRZKGRQOXMBZYGBNDFHDVLM"
+            );
+            TestCalculateEditDistance(
+                "NTBFKWGUYSLYRMMPSXNYXAZNZFJIPJDMNPZNLPEEYEONABFCZEZYVGCJBFMGWKQPTTGJDLKKQYJZYFSL",
+                "PEDWJMTVXVGGCLSTOOQEACZJNOVUYXPQGIRAPHFWAESSZKHKGKUEEGVWZXVFJWLQBUBOJMHLEHGKWYTN"
+            );
+            TestCalculateEditDistance(
+                "RPXZTOSEPHWYBYSOOAKMOOJRSSFHENHDVHOIKVNXMFAEXXTBNPNFPTFGNUPLKDWRSUQYWAUVMNVYJZQL",
+                "MFKSTCDHEPTSMYNDRSNJZOULCCIUXZDCGQZRSRYEODXKNBGBBKSPPCQHJYUSCKMJZBPUBLLXPRCQJYRV"
+            );
             TestCalculateEditDistance(
                 "USJZEXTQXQYCXPMSRNGIWRHJFQZFQYSOTBEUZMWWHJBOTOUPGLMRDITCGYIUJXGTBIOAJWYXCHUWFNYP",
                 "DKAXVOVHAAWFYDZXJHUUXIGQRIBQGNFHYYIYDZDTDYHGOZPRLQLUOHLKWLCPXKVDGWXYROAHSVEICUYF"
             );
-            //TestCalculateEditDistance(
-            //    "GMPOQQULURLAFHPSVGLCGWVTGJZEARVPKRKEWEOONARMPIEMYPUJYTHKQBYDMTPXGDKJTSHOJHWIWXBL",
-            //    "VSXFWFBANKGTNLVHZRJPHLGKMTCLSWCIQONXSGEBZESADLWHYUCFLFEJNBISZMVVLLCANHKLRSONBABF"
-            //);
-            //TestCalculateEditDistance(
-            //    "CFACAXPMVDBVRTXQNNALQJVGTRWFIFHUBGFQEUCYVXPABQBPKZWQVRVYIETXJTUKXIDGRRGPYCAOZNEL",
-            //    "UJSLLVNZRJXMXDKRFZMZNQNLZENYKGAKINKZXVRZGCETREQCNCWABDXLKAEBLXRIRDVHELGADMJDMPJN"
-            //);
+            TestCalculateEditDistance(
+                "GMPOQQULURLAFHPSVGLCGWVTGJZEARVPKRKEWEOONARMPIEMYPUJYTHKQBYDMTPXGDKJTSHOJHWIWXBL",
+                "VSXFWFBANKGTNLVHZRJPHLGKMTCLSWCIQONXSGEBZESADLWHYUCFLFEJNBISZMVVLLCANHKLRSONBABF"
+            );
+            TestCalculateEditDistance(
+                "CFACAXPMVDBVRTXQNNALQJVGTRWFIFHUBGFQEUCYVXPABQBPKZWQVRVYIETXJTUKXIDGRRGPYCAOZNEL",
+                "UJSLLVNZRJXMXDKRFZMZNQNLZENYKGAKINKZXVRZGCETREQCNCWABDXLKAEBLXRIRDVHELGADMJDMPJN"
+            );
 
             static void TestCalculateEditDistance(string a, string b)
             {
@@ -70,9 +70,9 @@ namespace Algorithms
 
             var solutions = new List<CommonSubsequence>();
             var newSolutions = new List<CommonSubsequence>();
-            var allCommonChars = new List<CommonConsecutiveChars>();
-            for (int i = 0; i < a.Length; )
+            for (int i = 0; i < a.Length; i++)
             {
+                RemoveImpossibleSolutionsAtElement(i);
                 foreach (var solution in solutions)
                 {
                     var indices = FindIndices(a[i], solution.LastCommonChars.SecondEndIndex);
@@ -96,13 +96,12 @@ namespace Algorithms
                     {
                         continue;
                     }
-                    allCommonChars.Add(commonChars);
                     var newSolution = new CommonSubsequence(new List<CommonConsecutiveChars> { commonChars }, a, b);
                     UpdateSolutions(newSolution, newSolutions);
                 }
 
                 var subOptimalNewSolutions = newSolutions
-                    .GroupBy(x => x.LastCommonChars)
+                    .GroupBy(x => x.LastCommonChars.FirstEndIndex + "," + x.LastCommonChars.SecondEndIndex)
                     .SelectMany(g =>
                     {
                         var minPartialEditDistance = g
@@ -114,11 +113,7 @@ namespace Algorithms
                     .Except(subOptimalNewSolutions);
                 solutions.AddRange(validNewSolutions);
                 RemoveImpossibleSolutions();
-                var minCommonCharsEndIndex = allCommonChars.Any() ? 
-                    allCommonChars.Min(x => x.FirstEndIndex) : i;
                 newSolutions.Clear();
-                allCommonChars.Clear();
-                i++;
             }
 
             Console.WriteLine($"We found {solutions.Count} common subsequences. These are as below:");
@@ -165,7 +160,7 @@ namespace Algorithms
                     editDistance = fullEditDistance;
                     solutions.Add(newSolution);
                 }
-                else if (bestPossibleEditDistance < editDistance)
+                else if (bestPossibleEditDistance <= editDistance)
                 {
                     solutions.Add(newSolution);
                 }
@@ -176,7 +171,22 @@ namespace Algorithms
                 var impossibleSolutions = solutions
                     .Where(x => x.GetBestPossibleEditDistance() > editDistance)
                     .ToList();
-                solutions = solutions.Except(impossibleSolutions).ToList();
+                foreach(var impossibleSolution in impossibleSolutions)
+                {
+                    solutions.Remove(impossibleSolution);
+                }
+            }
+
+            // TODO: Further remove impossible ones
+            void RemoveImpossibleSolutionsAtElement(int i)
+            {
+                var impossibleSolutions = solutions
+                    .Where(x => x.GetBestPossibleEditDistance() > editDistance)
+                    .ToList();
+                foreach (var impossibleSolution in impossibleSolutions)
+                {
+                    solutions.Remove(impossibleSolution);
+                }
             }
 
             List<int> FindIndices(char value, int? lastIndex = null)
@@ -214,13 +224,7 @@ namespace Algorithms
                               x.SecondStartIndex <= commonChars.SecondStartIndex && 
                               x.SecondEndIndex >= commonChars.SecondEndIndex
                     );
-                if (anyFullCoverCurrentCommonChars)
-                {
-                    return null;
-                }
-
-                commonCharsMap[key] = commonChars;
-                return commonChars;
+                return anyFullCoverCurrentCommonChars ? null : (commonCharsMap[key] = commonChars);
             }
         }
     }
@@ -322,7 +326,7 @@ namespace Algorithms
             var lastCommonChars = LastCommonChars;
             int firstDistance = A.Length - 1 - lastCommonChars.FirstEndIndex;
             int secondDistance = B.Length - 1 - lastCommonChars.SecondEndIndex;
-            int bestLeftOverDistance = Math.Abs(firstDistance - secondDistance) + 1;
+            int bestLeftOverDistance = Math.Abs(firstDistance - secondDistance);
             _bestPossibleFullEditDistance = GetPartialEditDistance() + bestLeftOverDistance;
             return _bestPossibleFullEditDistance;
         }
