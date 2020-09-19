@@ -70,7 +70,8 @@ namespace Algorithms
 
             var solutions = new List<CommonSubsequence>();
             var newSolutions = new List<CommonSubsequence>();
-            for (int i = 0; i < a.Length; i++)
+            var allCommonChars = new List<CommonConsecutiveChars>();
+            for (int i = 0; i < a.Length; )
             {
                 foreach (var solution in solutions)
                 {
@@ -78,14 +79,24 @@ namespace Algorithms
                     foreach (var index in indices)
                     {
                         var commonChars = FindCommonChars(a, b, i, index);
+                        if (commonChars == null)
+                        {
+                            continue;
+                        }
                         var newSolution = solution.Append(commonChars);
                         UpdateSolutions(newSolution, newSolutions);
                     }
                 }
                 var indicesOfCurrentChar = FindIndices(a[i]);
+                
                 foreach (var index2 in indicesOfCurrentChar)
                 {
                     var commonChars = FindCommonChars(a, b, i, index2);
+                    if (commonChars == null)
+                    {
+                        continue;
+                    }
+                    allCommonChars.Add(commonChars);
                     var newSolution = new CommonSubsequence(new List<CommonConsecutiveChars> { commonChars }, a, b);
                     UpdateSolutions(newSolution, newSolutions);
                 }
@@ -103,7 +114,11 @@ namespace Algorithms
                     .Except(subOptimalNewSolutions);
                 solutions.AddRange(validNewSolutions);
                 RemoveImpossibleSolutions();
+                var minCommonCharsEndIndex = allCommonChars.Any() ? 
+                    allCommonChars.Min(x => x.FirstEndIndex) : i;
                 newSolutions.Clear();
+                allCommonChars.Clear();
+                i++;
             }
 
             Console.WriteLine($"We found {solutions.Count} common subsequences. These are as below:");
@@ -190,6 +205,20 @@ namespace Algorithms
                     secondEnd++;
                 }
                 var commonChars = new CommonConsecutiveChars(a, firstStart, firstEnd, secondStart, secondEnd);
+                var prefix = $"{firstStart},";
+                var similarCommonCharsWithSameStart = commonCharsMap.Keys
+                    .Where(x => x.StartsWith(prefix))
+                    .Select(x => commonCharsMap[x]);
+                var anyFullCoverCurrentCommonChars = similarCommonCharsWithSameStart
+                    .Any(x => x.FirstEndIndex > commonChars.FirstEndIndex && 
+                              x.SecondStartIndex <= commonChars.SecondStartIndex && 
+                              x.SecondEndIndex >= commonChars.SecondEndIndex
+                    );
+                if (anyFullCoverCurrentCommonChars)
+                {
+                    return null;
+                }
+
                 commonCharsMap[key] = commonChars;
                 return commonChars;
             }
