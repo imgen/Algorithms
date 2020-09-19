@@ -4,7 +4,7 @@
     {
         static void Main(string[] args)
         {
-            EditDistance.TestCalculateEditDistance();
+            EditDistanceV2.TestCalculateEditDistance();
         }
     }
 }

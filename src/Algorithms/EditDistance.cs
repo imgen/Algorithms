@@ -73,10 +73,10 @@ namespace Algorithms
 
         public static void TestCalculateEditDistance()
         {
-            TestCalculateEditDistance("xyzabc", "abcde");
+            //TestCalculateEditDistance("xyzabc", "abcde");
             TestCalculateEditDistance("mabc", "ambxcde");
-            TestCalculateEditDistance("abc", "ambxcde");
-            TestCalculateEditDistance("uvwxyzabc", "abcdefghi");
+            //TestCalculateEditDistance("abc", "ambxcde");
+            //TestCalculateEditDistance("uvwxyzabc", "abcdefghi");
 
             static void TestCalculateEditDistance(string a, string b)
             {
