@@ -21,47 +21,69 @@ namespace Algorithms
             //TestCalculateEditDistance("abc", "ambxcde");
             //TestCalculateEditDistance("uvwxyzabc", "abmncd");
             //TestCalculateEditDistance("uvwxyzabc", "amnobcdefghi");
-            TestCalculateEditDistance("aaaaaaaaaaaaaaaaaaaaaaaXaaaaaaaaaaaaaaaaaaaaaaaaaaa", "aaaaaaXaaaaaaaaaaaaaaaaXaaaaaaaaaaaaaaaaaaaaXaaaaaaX");
-            TestCalculateEditDistance("abc*efghijklm---nopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLM+++NOPQRSTU*WXYZ");
-            TestCalculateEditDistance("aaaaaaaaaaaaaaaaaaaaaaabccccccbaaaaaaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaaaaaaaaaaabccccccbaaaaaaaaaaaaaaaaaa");
+            TestCalculateEditDistance("aaaaaaaaaaaaaaaaaaaaaaaXaaaaaaaaaaaaaaaaaaaaaaaaaaa", "aaaaaaXaaaaaaaaaaaaaaaaXaaaaaaaaaaaaaaaaaaaaXaaaaaaX", 
+                3, 2, 13);
+            TestCalculateEditDistance("abc*efghijklm---nopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLM+++NOPQRSTU*WXYZ", 
+                8, 1, 16);
+            TestCalculateEditDistance("aaaaaaaaaaaaaaaaaaaaaaabccccccbaaaaaaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaaaaaaaaaaabccccccbaaaaaaaaaaaaaaaaaa", 
+                2, 1, 9);
             TestCalculateEditDistance(
                 "CGICNWFJZOWBDEVORLYOOUHSIPOICMSOQIUBGSDIROYOMJJSLUPVRBNOOPAHMPNGQXHCPSLEYZEYSDGF",
-                "TBYHUADAJRXTDDKWMPYKNQFMGBOXJGNLOGIKTLKVUKREEEVZMTCJVUZSHNRZKGRQOXMBZYGBNDFHDVLM"
+                "TBYHUADAJRXTDDKWMPYKNQFMGBOXJGNLOGIKTLKVUKREEEVZMTCJVUZSHNRZKGRQOXMBZYGBNDFHDVLM",
+                74, 114, 1245
             );
             TestCalculateEditDistance(
                 "NTBFKWGUYSLYRMMPSXNYXAZNZFJIPJDMNPZNLPEEYEONABFCZEZYVGCJBFMGWKQPTTGJDLKKQYJZYFSL",
-                "PEDWJMTVXVGGCLSTOOQEACZJNOVUYXPQGIRAPHFWAESSZKHKGKUEEGVWZXVFJWLQBUBOJMHLEHGKWYTN"
+                "PEDWJMTVXVGGCLSTOOQEACZJNOVUYXPQGIRAPHFWAESSZKHKGKUEEGVWZXVFJWLQBUBOJMHLEHGKWYTN",
+                70, 8, 699
             );
             TestCalculateEditDistance(
                 "RPXZTOSEPHWYBYSOOAKMOOJRSSFHENHDVHOIKVNXMFAEXXTBNPNFPTFGNUPLKDWRSUQYWAUVMNVYJZQL",
-                "MFKSTCDHEPTSMYNDRSNJZOULCCIUXZDCGQZRSRYEODXKNBGBBKSPPCQHJYUSCKMJZBPUBLLXPRCQJYRV"
+                "MFKSTCDHEPTSMYNDRSNJZOULCCIUXZDCGQZRSRYEODXKNBGBBKSPPCQHJYUSCKMJZBPUBLLXPRCQJYRV",
+                72, 15, 586
             );
             TestCalculateEditDistance(
                 "USJZEXTQXQYCXPMSRNGIWRHJFQZFQYSOTBEUZMWWHJBOTOUPGLMRDITCGYIUJXGTBIOAJWYXCHUWFNYP",
-                "DKAXVOVHAAWFYDZXJHUUXIGQRIBQGNFHYYIYDZDTDYHGOZPRLQLUOHLKWLCPXKVDGWXYROAHSVEICUYF"
+                "DKAXVOVHAAWFYDZXJHUUXIGQRIBQGNFHYYIYDZDTDYHGOZPRLQLUOHLKWLCPXKVDGWXYROAHSVEICUYF",
+                72, 600, 3344
             );
             TestCalculateEditDistance(
                 "GMPOQQULURLAFHPSVGLCGWVTGJZEARVPKRKEWEOONARMPIEMYPUJYTHKQBYDMTPXGDKJTSHOJHWIWXBL",
-                "VSXFWFBANKGTNLVHZRJPHLGKMTCLSWCIQONXSGEBZESADLWHYUCFLFEJNBISZMVVLLCANHKLRSONBABF"
+                "VSXFWFBANKGTNLVHZRJPHLGKMTCLSWCIQONXSGEBZESADLWHYUCFLFEJNBISZMVVLLCANHKLRSONBABF",
+                74, 5, 997
             );
             TestCalculateEditDistance(
                 "CFACAXPMVDBVRTXQNNALQJVGTRWFIFHUBGFQEUCYVXPABQBPKZWQVRVYIETXJTUKXIDGRRGPYCAOZNEL",
-                "UJSLLVNZRJXMXDKRFZMZNQNLZENYKGAKINKZXVRZGCETREQCNCWABDXLKAEBLXRIRDVHELGADMJDMPJN"
+                "UJSLLVNZRJXMXDKRFZMZNQNLZENYKGAKINKZXVRZGCETREQCNCWABDXLKAEBLXRIRDVHELGADMJDMPJN",
+                74, 57, 2175
             );
 
-            static void TestCalculateEditDistance(string a, string b)
+            static void TestCalculateEditDistance(string a, string b, 
+                int expectedEditDistance,
+                int expectedSolutionCount, 
+                int currentTotalSolutionCount
+                )
             {
                 if (a.Length > b.Length)
                 {
                     (a, b) = (b, a);
                 }
-                int editDistance = CalculateEditDistance(a, b);
+                int editDistance = CalculateEditDistance(
+                        a, b,
+                        expectedEditDistance,
+                        expectedSolutionCount, 
+                        currentTotalSolutionCount
+                    );
                 Console.WriteLine($"The edit distance for {a} and {b} is {editDistance}");
                 Console.WriteLine(Environment.NewLine);
             }
         }
 
-        private static int CalculateEditDistance(string a, string b)
+        private static int CalculateEditDistance(string a, 
+            string b,
+            int expectedEditDistance,
+            int expectedSolutionCount,
+            int currentTotalSolutionCount)
         {
             int maximumDistance = Math.Max(a.Length, b.Length);
             int editDistance = maximumDistance;
@@ -116,16 +138,37 @@ namespace Algorithms
                 newSolutions.Clear();
             }
 
+            if (solutions.Count > currentTotalSolutionCount)
+            {
+                PrintError("\r\nOops, regression in performance\r\n");
+            }
+
+            if (editDistance != expectedEditDistance)
+            {
+                PrintError("Oops, wrong edit distance");
+            }
+
             Console.WriteLine($"We found {solutions.Count} common subsequences. These are as below:");
             //PrintCommonSubsequences(solutions);
 
             var allValidSolutions = solutions.Where(x => x.GetFullEditDistance() == editDistance)
                 .ToList();
+            if (allValidSolutions.Count < expectedSolutionCount)
+            {
+                PrintError("\r\nOops, lost some valid solutions\r\n");
+            }
 
             Console.WriteLine($"We have found {allValidSolutions.Count} common subsequences for {a} and {b} with minimum edit distance {editDistance}. These are as below:");
             //PrintCommonSubsequences(allValidSolutions);
 
             return editDistance;
+
+            static void PrintError(string error)
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine($"\r\n{error}\r\n");
+                Console.ForegroundColor = ConsoleColor.Black;
+            }
 
             static void PrintCommonSubsequences(IList<CommonSubsequence> subsequences)
             {
@@ -180,7 +223,13 @@ namespace Algorithms
             // TODO: Further remove impossible ones
             void RemoveImpossibleSolutionsAtElement(int i)
             {
-                
+                var impossibleSolutions = solutions
+                    .Where(x => x.GetBestPossibleEditDistanceAtIndex(i) > editDistance)
+                    .ToList();
+                foreach (var impossibleSolution in impossibleSolutions)
+                {
+                    solutions.Remove(impossibleSolution);
+                }
             }
 
             List<int> FindIndices(char value, int? lastIndex = null)
@@ -325,43 +374,33 @@ namespace Algorithms
             return _bestPossibleFullEditDistance;
         }
 
-        private readonly Dictionary<int, int> _bestPossibleDistanceFromIndexMap = new Dictionary<int, int>();
-        public int GetBestPossibleEditDistanceFromIndex(int index)
-        {
-            if (_bestPossibleDistanceFromIndexMap.ContainsKey(index))
-            {
-                return _bestPossibleDistanceFromIndexMap[index];
-            }
-            var startIndex = LastCommonChars.FirstEndIndex + 1;
-            for (int i = startIndex; i < A.Length; i++)
-            {
-                GetBestPossibleEditDistanceAtIndex(i);
-            }
-
-            for (int i = startIndex; i < A.Length; i++)
-            {
-                var bestPossibleDistance = _bestPossibleDistanceAtIndexMap.Keys
-                    .Where(x => x >= startIndex)
-                    .Min(x => _bestPossibleDistanceAtIndexMap[x]);
-                _bestPossibleDistanceFromIndexMap[bestPossibleDistance] = bestPossibleDistance;
-            }
-
-            return _bestPossibleDistanceAtIndexMap[index];
-        }
-
         private readonly Dictionary<int, int> _bestPossibleDistanceAtIndexMap = new Dictionary<int, int>();
         public int GetBestPossibleEditDistanceAtIndex(int index)
         {
+            var lastCommonChars = LastCommonChars;
+            int startIndex = lastCommonChars.SecondEndIndex + 1;
+            if (index <= startIndex)
+            {
+                return GetBestPossibleEditDistance();
+            }
             if (_bestPossibleDistanceAtIndexMap.ContainsKey(index))
             {
                 return _bestPossibleDistanceAtIndexMap[index];
             }
-            var lastCommonChars = LastCommonChars;
-            int distanceFromFirstEnd = index - 1 - lastCommonChars.FirstEndIndex;
-            var firstDistanceAtI = A.Length - 1 - index;
-            var secondDistanceAtI = B.Length - 1 - lastCommonChars.SecondEndIndex;
-            var bestPossibleDistance = distanceFromFirstEnd + Math.Abs(firstDistanceAtI - secondDistanceAtI);
-            return _bestPossibleDistanceAtIndexMap[index] = bestPossibleDistance;
+            
+            var secondDistance = B.Length - 1 - lastCommonChars.SecondEndIndex;
+            int distanceFromFirstEnd = 1;
+            var firstDistanceAtI = A.Length - 1 - startIndex;
+            for (int i = startIndex + 1; i < A.Length; i++)
+            {
+                var bestPossibleDistance = distanceFromFirstEnd + 
+                    Math.Abs(firstDistanceAtI - secondDistance);
+                _bestPossibleDistanceAtIndexMap[i] = bestPossibleDistance;
+                distanceFromFirstEnd++;
+                firstDistanceAtI--;
+            }
+            
+            return _bestPossibleDistanceAtIndexMap[index];
         }
 
         private int GetEditDistance(CommonSubsequence commonSubsequence, CommonConsecutiveChars newCommonChars)
