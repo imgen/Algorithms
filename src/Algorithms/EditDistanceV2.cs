@@ -4,7 +4,7 @@ using System.Linq;
 
 /// <summary>
 /// #1. Use consecutive common char blocks instead of a char at once
-/// #2. Calculate whether a partial edit distance + Math.Abs(a.Length -1 - aIndex - b.Length - 1 - bIndex), 
+/// #2. Calculate whether a partial edit distance + Math.Abs(a.Length -1 - aIndex - b.Length - 1 - bIndex),
 /// if the sum > minEditDistance, remove the solution from the list
 /// if the sum == minEditDistance, but the rest of the string is not all common chars, also remove the solution
 /// #3. Try to remove certain solutions by use dynamic programing logic
@@ -21,46 +21,46 @@ namespace Algorithms
             //TestCalculateEditDistance("abc", "ambxcde");
             //TestCalculateEditDistance("uvwxyzabc", "abmncd");
             //TestCalculateEditDistance("uvwxyzabc", "amnobcdefghi");
-            TestCalculateEditDistance("aaaaaaaaaaaaaaaaaaaaaaaXaaaaaaaaaaaaaaaaaaaaaaaaaaa", "aaaaaaXaaaaaaaaaaaaaaaaXaaaaaaaaaaaaaaaaaaaaXaaaaaaX", 
-                3, 2, 13);
-            TestCalculateEditDistance("abc*efghijklm---nopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLM+++NOPQRSTU*WXYZ", 
-                8, 1, 16);
-            TestCalculateEditDistance("aaaaaaaaaaaaaaaaaaaaaaabccccccbaaaaaaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaaaaaaaaaaabccccccbaaaaaaaaaaaaaaaaaa", 
-                2, 1, 9);
+            TestCalculateEditDistance("aaaaaaaaaaaaaaaaaaaaaaaXaaaaaaaaaaaaaaaaaaaaaaaaaaa", "aaaaaaXaaaaaaaaaaaaaaaaXaaaaaaaaaaaaaaaaaaaaXaaaaaaX",
+                3, 2, 3);
+            TestCalculateEditDistance("abc*efghijklm---nopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLM+++NOPQRSTU*WXYZ",
+                8, 1, 1);
+            TestCalculateEditDistance("aaaaaaaaaaaaaaaaaaaaaaabccccccbaaaaaaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaaaaaaaaaaabccccccbaaaaaaaaaaaaaaaaaa",
+                2, 1, 1);
             TestCalculateEditDistance(
                 "CGICNWFJZOWBDEVORLYOOUHSIPOICMSOQIUBGSDIROYOMJJSLUPVRBNOOPAHMPNGQXHCPSLEYZEYSDGF",
                 "TBYHUADAJRXTDDKWMPYKNQFMGBOXJGNLOGIKTLKVUKREEEVZMTCJVUZSHNRZKGRQOXMBZYGBNDFHDVLM",
-                74, 114, 1245
+                74, 114, 156
             );
             TestCalculateEditDistance(
                 "NTBFKWGUYSLYRMMPSXNYXAZNZFJIPJDMNPZNLPEEYEONABFCZEZYVGCJBFMGWKQPTTGJDLKKQYJZYFSL",
                 "PEDWJMTVXVGGCLSTOOQEACZJNOVUYXPQGIRAPHFWAESSZKHKGKUEEGVWZXVFJWLQBUBOJMHLEHGKWYTN",
-                70, 8, 699
+                70, 8, 20
             );
             TestCalculateEditDistance(
                 "RPXZTOSEPHWYBYSOOAKMOOJRSSFHENHDVHOIKVNXMFAEXXTBNPNFPTFGNUPLKDWRSUQYWAUVMNVYJZQL",
                 "MFKSTCDHEPTSMYNDRSNJZOULCCIUXZDCGQZRSRYEODXKNBGBBKSPPCQHJYUSCKMJZBPUBLLXPRCQJYRV",
-                72, 15, 586
+                72, 15, 25
             );
             TestCalculateEditDistance(
                 "USJZEXTQXQYCXPMSRNGIWRHJFQZFQYSOTBEUZMWWHJBOTOUPGLMRDITCGYIUJXGTBIOAJWYXCHUWFNYP",
                 "DKAXVOVHAAWFYDZXJHUUXIGQRIBQGNFHYYIYDZDTDYHGOZPRLQLUOHLKWLCPXKVDGWXYROAHSVEICUYF",
-                72, 600, 3344
+                72, 600, 900
             );
             TestCalculateEditDistance(
                 "GMPOQQULURLAFHPSVGLCGWVTGJZEARVPKRKEWEOONARMPIEMYPUJYTHKQBYDMTPXGDKJTSHOJHWIWXBL",
                 "VSXFWFBANKGTNLVHZRJPHLGKMTCLSWCIQONXSGEBZESADLWHYUCFLFEJNBISZMVVLLCANHKLRSONBABF",
-                74, 5, 997
+                74, 5, 10
             );
             TestCalculateEditDistance(
                 "CFACAXPMVDBVRTXQNNALQJVGTRWFIFHUBGFQEUCYVXPABQBPKZWQVRVYIETXJTUKXIDGRRGPYCAOZNEL",
                 "UJSLLVNZRJXMXDKRFZMZNQNLZENYKGAKINKZXVRZGCETREQCNCWABDXLKAEBLXRIRDVHELGADMJDMPJN",
-                74, 57, 2175
+                74, 57, 114
             );
 
-            static void TestCalculateEditDistance(string a, string b, 
+            static void TestCalculateEditDistance(string a, string b,
                 int expectedEditDistance,
-                int expectedSolutionCount, 
+                int expectedSolutionCount,
                 int currentTotalSolutionCount
                 )
             {
@@ -71,15 +71,16 @@ namespace Algorithms
                 int editDistance = CalculateEditDistance(
                         a, b,
                         expectedEditDistance,
-                        expectedSolutionCount, 
+                        expectedSolutionCount,
                         currentTotalSolutionCount
                     );
-                Console.WriteLine($"The edit distance for {a} and {b} is {editDistance}");
-                Console.WriteLine(Environment.NewLine);
+                Console.WriteLine(editDistance);
+                //Console.WriteLine($"The edit distance for {a} and {b} is {editDistance}");
+                //Console.WriteLine(Environment.NewLine);
             }
         }
 
-        private static int CalculateEditDistance(string a, 
+        private static int CalculateEditDistance(string a,
             string b,
             int expectedEditDistance,
             int expectedSolutionCount,
@@ -94,8 +95,7 @@ namespace Algorithms
             var newSolutions = new List<CommonSubsequence>();
             for (int i = 0; i < a.Length; i++)
             {
-                RemoveImpossibleSolutionsAtElement(i);
-                foreach (var solution in solutions)
+                foreach (var solution in solutions.Where(x => x.IsPossible))
                 {
                     var indices = FindIndices(a[i], solution.LastCommonChars.SecondEndIndex);
                     foreach (var index in indices)
@@ -110,7 +110,7 @@ namespace Algorithms
                     }
                 }
                 var indicesOfCurrentChar = FindIndices(a[i]);
-                
+
                 foreach (var index2 in indicesOfCurrentChar)
                 {
                     var commonChars = FindCommonChars(a, b, i, index2);
@@ -134,11 +134,15 @@ namespace Algorithms
                 var validNewSolutions = newSolutions
                     .Except(subOptimalNewSolutions);
                 solutions.AddRange(validNewSolutions);
-                RemoveImpossibleSolutions();
+                if (i < a.Length - 1)
+                {
+                    RemoveImpossibleSolutionsAtElement(i + 1);
+                }
                 newSolutions.Clear();
             }
 
-            if (solutions.Count > currentTotalSolutionCount)
+            var possibleSolutionCount = solutions.Count(x => x.IsPossible);
+            if (possibleSolutionCount > currentTotalSolutionCount)
             {
                 PrintError("\r\nOops, regression in performance\r\n");
             }
@@ -148,7 +152,7 @@ namespace Algorithms
                 PrintError("Oops, wrong edit distance");
             }
 
-            Console.WriteLine($"We found {solutions.Count} common subsequences. These are as below:");
+            //Console.WriteLine($"We found {possibleSolutionCount} common subsequences. These are as below:");
             //PrintCommonSubsequences(solutions);
 
             var allValidSolutions = solutions.Where(x => x.GetFullEditDistance() == editDistance)
@@ -158,7 +162,7 @@ namespace Algorithms
                 PrintError("\r\nOops, lost some valid solutions\r\n");
             }
 
-            Console.WriteLine($"We have found {allValidSolutions.Count} common subsequences for {a} and {b} with minimum edit distance {editDistance}. These are as below:");
+            //Console.WriteLine($"We have found {allValidSolutions.Count} common subsequences for {a} and {b} with minimum edit distance {editDistance}. These are as below:");
             //PrintCommonSubsequences(allValidSolutions);
 
             return editDistance;
@@ -167,7 +171,7 @@ namespace Algorithms
             {
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine($"\r\n{error}\r\n");
-                Console.ForegroundColor = ConsoleColor.Black;
+                Console.ForegroundColor = ConsoleColor.White;
             }
 
             static void PrintCommonSubsequences(IList<CommonSubsequence> subsequences)
@@ -193,7 +197,8 @@ namespace Algorithms
                     );
             }
 
-            void UpdateSolutions(CommonSubsequence newSolution, List<CommonSubsequence> solutions)
+            void UpdateSolutions(CommonSubsequence newSolution,
+                List<CommonSubsequence> solutions)
             {
                 var partialEditDistance = newSolution.GetPartialEditDistance();
                 var fullEditDistance = newSolution.GetFullEditDistance();
@@ -223,12 +228,12 @@ namespace Algorithms
             // TODO: Further remove impossible ones
             void RemoveImpossibleSolutionsAtElement(int i)
             {
-                var impossibleSolutions = solutions
-                    .Where(x => x.GetBestPossibleEditDistanceAtIndex(i) > editDistance)
-                    .ToList();
-                foreach (var impossibleSolution in impossibleSolutions)
+                foreach (var x in solutions.Where(x => x.IsPossible))
                 {
-                    solutions.Remove(impossibleSolution);
+                    if (x.GetBestPossibleEditDistanceAtIndex(i) > editDistance)
+                    {
+                        x.IsPossible = false;
+                    }
                 }
             }
 
@@ -250,8 +255,8 @@ namespace Algorithms
                 int firstEnd = firstStart;
                 int secondEnd = secondStart;
 
-                while(firstEnd < a.Length - 1 && 
-                    secondEnd < b.Length - 1 && 
+                while(firstEnd < a.Length - 1 &&
+                    secondEnd < b.Length - 1 &&
                     a[firstEnd + 1] == b[secondEnd + 1])
                 {
                     firstEnd++;
@@ -263,8 +268,8 @@ namespace Algorithms
                     .Where(x => x.StartsWith(prefix))
                     .Select(x => commonCharsMap[x]);
                 var anyFullCoverCurrentCommonChars = similarCommonCharsWithSameStart
-                    .Any(x => x.FirstEndIndex > commonChars.FirstEndIndex && 
-                              x.SecondStartIndex <= commonChars.SecondStartIndex && 
+                    .Any(x => x.FirstEndIndex > commonChars.FirstEndIndex &&
+                              x.SecondStartIndex <= commonChars.SecondStartIndex &&
                               x.SecondEndIndex >= commonChars.SecondEndIndex
                     );
                 return anyFullCoverCurrentCommonChars ? null : (commonCharsMap[key] = commonChars);
@@ -288,18 +293,17 @@ namespace Algorithms
 
     class CommonSubsequence
     {
+        public bool IsPossible { get; set; } = true;
         public List<CommonConsecutiveChars> Sequence;
-        public CommonConsecutiveChars LastCommonChars => Sequence[^1];
+
+        private CommonConsecutiveChars _lastCommonChars;
+        public CommonConsecutiveChars LastCommonChars => _lastCommonChars ??= Sequence[^1];
         public string A, B;
 
         private string _commonString;
         public string GetCommonString()
         {
-            if (_commonString != null)
-            {
-                return _commonString;
-            }
-            return _commonString = Sequence.Aggregate(string.Empty, (str, chars) => str + chars.String);
+            return _commonString ??= Sequence.Aggregate(string.Empty, (str, chars) => str + chars.String);
         }
 
         public CommonSubsequence(List<CommonConsecutiveChars> commonChars, string a, string b)
@@ -309,9 +313,9 @@ namespace Algorithms
             B = b;
         }
 
-        public CommonSubsequence(CommonSubsequence previousCommonChars, 
+        public CommonSubsequence(CommonSubsequence previousCommonChars,
             CommonConsecutiveChars newCommonChar,
-            string a, 
+            string a,
             string b)
         {
             Sequence = previousCommonChars.Sequence.Append(newCommonChar).ToList();
@@ -352,12 +356,21 @@ namespace Algorithms
             {
                 return _fullEditDistance;
             }
-            var lastCommonChars = LastCommonChars;
-            int firstDistance = A.Length - 1 - lastCommonChars.FirstEndIndex;
-            int secondDistance = B.Length - 1 - lastCommonChars.SecondEndIndex;
+            int firstDistance = GetLastFirstDistance();
+            int secondDistance = GetLastSecondDistance();
             _fullEditDistance = GetPartialEditDistance() + Math.Max(firstDistance, secondDistance);
             return _fullEditDistance;
         }
+
+        private int _lastSecondDistance = -1;
+        private int GetLastSecondDistance() => _lastSecondDistance < 0 ?
+                _lastSecondDistance = B.Length - 1 - LastCommonChars.SecondEndIndex :
+                _lastSecondDistance;
+
+        private int _lastFirstDistance = -1;
+        private int GetLastFirstDistance() => _lastFirstDistance < 0 ?
+                _lastFirstDistance = A.Length - 1 - LastCommonChars.FirstEndIndex :
+                _lastFirstDistance;
 
         private int _bestPossibleFullEditDistance = -1;
         public int GetBestPossibleEditDistance()
@@ -366,41 +379,44 @@ namespace Algorithms
             {
                 return _bestPossibleFullEditDistance;
             }
-            var lastCommonChars = LastCommonChars;
-            int firstDistance = A.Length - 1 - lastCommonChars.FirstEndIndex;
-            int secondDistance = B.Length - 1 - lastCommonChars.SecondEndIndex;
+            int firstDistance = GetLastFirstDistance();
+            int secondDistance = GetLastSecondDistance();
             int bestLeftOverDistance = Math.Abs(firstDistance - secondDistance);
             _bestPossibleFullEditDistance = GetPartialEditDistance() + bestLeftOverDistance;
             return _bestPossibleFullEditDistance;
         }
 
-        private readonly Dictionary<int, int> _bestPossibleDistanceAtIndexMap = new Dictionary<int, int>();
+        private int _bestPossibleEditDistanceIncreaseIndex = -1;
+        private int BestPossibleEditDistanceIncreaseIndex
+        {
+            get
+            {
+                if (_bestPossibleEditDistanceIncreaseIndex >= 0)
+                {
+                    return _bestPossibleEditDistanceIncreaseIndex;
+                }
+                var firstDistance = GetLastFirstDistance();
+                var secondDistance = GetLastSecondDistance();
+                _bestPossibleEditDistanceIncreaseIndex = LastCommonChars.FirstEndIndex + 1;
+                if (firstDistance > secondDistance)
+                {
+                    _bestPossibleEditDistanceIncreaseIndex +=
+                        firstDistance - secondDistance;
+                }
+                return _bestPossibleEditDistanceIncreaseIndex;
+            }
+        }
+
         public int GetBestPossibleEditDistanceAtIndex(int index)
         {
-            var lastCommonChars = LastCommonChars;
-            int startIndex = lastCommonChars.SecondEndIndex + 1;
-            if (index <= startIndex)
+            var increaseIndex = BestPossibleEditDistanceIncreaseIndex;
+            if (index <= increaseIndex)
             {
                 return GetBestPossibleEditDistance();
             }
-            if (_bestPossibleDistanceAtIndexMap.ContainsKey(index))
-            {
-                return _bestPossibleDistanceAtIndexMap[index];
-            }
-            
-            var secondDistance = B.Length - 1 - lastCommonChars.SecondEndIndex;
-            int distanceFromFirstEnd = 1;
-            var firstDistanceAtI = A.Length - 1 - startIndex;
-            for (int i = startIndex + 1; i < A.Length; i++)
-            {
-                var bestPossibleDistance = distanceFromFirstEnd + 
-                    Math.Abs(firstDistanceAtI - secondDistance);
-                _bestPossibleDistanceAtIndexMap[i] = bestPossibleDistance;
-                distanceFromFirstEnd++;
-                firstDistanceAtI--;
-            }
-            
-            return _bestPossibleDistanceAtIndexMap[index];
+
+            int distanceFromFirstEnd = index - increaseIndex;
+            return GetBestPossibleEditDistance() + distanceFromFirstEnd;
         }
 
         private int GetEditDistance(CommonSubsequence commonSubsequence, CommonConsecutiveChars newCommonChars)
