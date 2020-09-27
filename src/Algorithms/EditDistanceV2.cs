@@ -14,6 +14,8 @@ namespace Algorithms
 {
     public static class EditDistanceV2
     {
+        private static readonly List<CommonSubsequence> Solutions = new List<CommonSubsequence>();
+        private static readonly List<CommonSubsequence> NewSolutions = new List<CommonSubsequence>();
         public static void TestCalculateEditDistance()
         {
             //TestCalculateEditDistance("xyzabc", "abcde");
@@ -74,9 +76,8 @@ namespace Algorithms
                         expectedSolutionCount,
                         currentTotalSolutionCount
                     );
-                Console.WriteLine(editDistance);
-                //Console.WriteLine($"The edit distance for {a} and {b} is {editDistance}");
-                //Console.WriteLine(Environment.NewLine);
+                Console.WriteLine($"The edit distance for {a} and {b} is {editDistance}");
+                Console.WriteLine(Environment.NewLine);
             }
         }
 
@@ -91,11 +92,11 @@ namespace Algorithms
             var commonCharsMap = new Dictionary<string, CommonConsecutiveChars>();
             var occuranceMap = BuildOccuranceMap(b);
 
-            var solutions = new List<CommonSubsequence>();
-            var newSolutions = new List<CommonSubsequence>();
+            Solutions.Clear();
+            NewSolutions.Clear();
             for (int i = 0; i < a.Length; i++)
             {
-                foreach (var solution in solutions.Where(x => x.IsPossible))
+                foreach (var solution in Solutions.Where(x => x.IsPossible))
                 {
                     var indices = FindIndices(a[i], solution.LastCommonChars.SecondEndIndex);
                     foreach (var index in indices)
@@ -106,7 +107,7 @@ namespace Algorithms
                             continue;
                         }
                         var newSolution = solution.Append(commonChars);
-                        UpdateSolutions(newSolution, newSolutions);
+                        UpdateSolutions(newSolution, NewSolutions);
                     }
                 }
                 var indicesOfCurrentChar = FindIndices(a[i]);
@@ -119,10 +120,10 @@ namespace Algorithms
                         continue;
                     }
                     var newSolution = new CommonSubsequence(new List<CommonConsecutiveChars> { commonChars }, a, b);
-                    UpdateSolutions(newSolution, newSolutions);
+                    UpdateSolutions(newSolution, NewSolutions);
                 }
 
-                var subOptimalNewSolutions = newSolutions
+                var subOptimalNewSolutions = NewSolutions
                     .GroupBy(x => x.LastCommonChars.FirstEndIndex + "," + x.LastCommonChars.SecondEndIndex)
                     .SelectMany(g =>
                     {
@@ -131,17 +132,17 @@ namespace Algorithms
                         return g.Where(x => x.GetPartialEditDistance() > minPartialEditDistance);
                     }).ToList();
 
-                var validNewSolutions = newSolutions
+                var validNewSolutions = NewSolutions
                     .Except(subOptimalNewSolutions);
-                solutions.AddRange(validNewSolutions);
+                Solutions.AddRange(validNewSolutions);
                 if (i < a.Length - 1)
                 {
                     RemoveImpossibleSolutionsAtElement(i + 1);
                 }
-                newSolutions.Clear();
+                NewSolutions.Clear();
             }
 
-            var possibleSolutionCount = solutions.Count(x => x.IsPossible);
+            var possibleSolutionCount = Solutions.Count(x => x.IsPossible);
             if (possibleSolutionCount > currentTotalSolutionCount)
             {
                 PrintError("\r\nOops, regression in performance\r\n");
@@ -152,17 +153,17 @@ namespace Algorithms
                 PrintError("Oops, wrong edit distance");
             }
 
-            //Console.WriteLine($"We found {possibleSolutionCount} common subsequences. These are as below:");
+            Console.WriteLine($"We found {possibleSolutionCount} common subsequences. These are as below:");
             //PrintCommonSubsequences(solutions);
 
-            var allValidSolutions = solutions.Where(x => x.GetFullEditDistance() == editDistance)
+            var allValidSolutions = Solutions.Where(x => x.GetFullEditDistance() == editDistance)
                 .ToList();
             if (allValidSolutions.Count < expectedSolutionCount)
             {
                 PrintError("\r\nOops, lost some valid solutions\r\n");
             }
 
-            //Console.WriteLine($"We have found {allValidSolutions.Count} common subsequences for {a} and {b} with minimum edit distance {editDistance}. These are as below:");
+            Console.WriteLine($"We have found {allValidSolutions.Count} common subsequences for {a} and {b} with minimum edit distance {editDistance}. These are as below:");
             //PrintCommonSubsequences(allValidSolutions);
 
             return editDistance;
@@ -214,21 +215,10 @@ namespace Algorithms
                 }
             }
 
-            void RemoveImpossibleSolutions()
-            {
-                var impossibleSolutions = solutions
-                    .Where(x => x.GetBestPossibleEditDistance() > editDistance)
-                    .ToList();
-                foreach(var impossibleSolution in impossibleSolutions)
-                {
-                    solutions.Remove(impossibleSolution);
-                }
-            }
-
             // TODO: Further remove impossible ones
             void RemoveImpossibleSolutionsAtElement(int i)
             {
-                foreach (var x in solutions.Where(x => x.IsPossible))
+                foreach (var x in Solutions.Where(x => x.IsPossible))
                 {
                     if (x.GetBestPossibleEditDistanceAtIndex(i) > editDistance)
                     {
@@ -410,13 +400,10 @@ namespace Algorithms
         public int GetBestPossibleEditDistanceAtIndex(int index)
         {
             var increaseIndex = BestPossibleEditDistanceIncreaseIndex;
-            if (index <= increaseIndex)
-            {
-                return GetBestPossibleEditDistance();
-            }
-
-            int distanceFromFirstEnd = index - increaseIndex;
-            return GetBestPossibleEditDistance() + distanceFromFirstEnd;
+            var bestPossibleDistance = GetBestPossibleEditDistance();
+            return index <= increaseIndex ?
+                bestPossibleDistance :
+                bestPossibleDistance + index - increaseIndex;
         }
 
         private int GetEditDistance(CommonSubsequence commonSubsequence, CommonConsecutiveChars newCommonChars)
