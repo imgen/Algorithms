@@ -62,12 +62,9 @@ public static class BinaryTreeBreadthFirstTraverser
     
     public static void Traverse(BinaryTreeNode<int> root)
     {
-        if (root == null)
-            return;
+        if (root == null) return;
 
-        Queue<BinaryTreeNodeAndLevel<int>> queue = new ();
-        queue.Enqueue(new BinaryTreeNodeAndLevel<int>(root, 1));
-        
+        Queue<BinaryTreeNodeAndLevel<int>> queue = new ([new BinaryTreeNodeAndLevel<int>(root, 1)]);
         while (queue.Count > 0)
         {
             var (node, nodeLevel) = queue.Dequeue();
