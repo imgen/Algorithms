@@ -1,6 +1,5 @@
-﻿namespace Algorithms
+﻿namespace Algorithms;
+
+public static class ShortestPath
 {
-    class ShortestPath
-    {
-    }
 }

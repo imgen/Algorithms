@@ -1,10 +1,10 @@
-﻿namespace Algorithms
+﻿namespace Algorithms;
+
+class Program
 {
-    class Program
+    static void Main(string[] args)
     {
-        static void Main(string[] args)
-        {
-            EditDistanceV2.TestCalculateEditDistance();
-        }
+        BinaryTreeBreadthFirstTraverser.TestBinaryTreeBreadthFirstTraverser();
+        // EditDistanceV2.TestCalculateEditDistance();
     }
 }

@@ -1,35 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Algorithms
+namespace Algorithms;
+
+public static class MiscUtils
 {
-    static class MiscUtils
+    public static void PrintOut<T>(this IList<T> a)
     {
-        public static void PrintOut<T>(this IList<T> a)
+        Console.WriteLine($"The contents of the array with length {a.Count} is as below:");
+        foreach (var item in a)
         {
-            Console.WriteLine($"The contents of the array with length {a.Count} is as below:");
-            foreach (var item in a)
-            {
-                Console.WriteLine(item);
-            }
-
-            Console.WriteLine();
+            Console.WriteLine(item);
         }
 
-        public static TSource FirstOrDefault<TSource>(
-            this IEnumerable<TSource> source,
-            Func<TSource, bool> predicate, 
-            TSource defaultValue)
-        {
-            foreach(var item in source)
-            {
-                if (predicate(item))
-                {
-                    return item;
-                }
-            }
+        Console.WriteLine();
+    }
 
-            return defaultValue;
+    public static TSource FirstOrDefault<TSource>(
+        this IEnumerable<TSource> source,
+        Func<TSource, bool> predicate, 
+        TSource defaultValue)
+    {
+        foreach(var item in source)
+        {
+            if (predicate(item))
+            {
+                return item;
+            }
         }
+
+        return defaultValue;
     }
 }
