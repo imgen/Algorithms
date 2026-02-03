@@ -1,10 +1,4 @@
-﻿namespace Algorithms;
+﻿using Algorithms;
 
-class Program
-{
-    static void Main(string[] args)
-    {
-        BinaryTreeBreadthFirstTraverser.TestBinaryTreeBreadthFirstTraverser();
-        // EditDistanceV2.TestCalculateEditDistance();
-    }
-}
+BinaryTreeTraverser.TestPostOrderTraversal();
+// EditDistanceV2.TestCalculateEditDistance();
