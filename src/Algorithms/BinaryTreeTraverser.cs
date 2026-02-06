@@ -42,36 +42,36 @@ public static class BinaryTreeTraverser
         PostOrderTraverseWithoutFlag(IntegerBinaryTree);
     }
 
-    public static void TestUniversalTraversal()
+    public static void TestUnifiedTraversal()
     {
-        Console.WriteLine("PreOrder traversal using universal method");
-        UniversalTraverse(IntegerBinaryTree, PreOrder);
+        Console.WriteLine("PreOrder traversal using Unified method");
+        UnifiedTraverse(IntegerBinaryTree, PreOrder);
         
         Console.WriteLine();
         
-        Console.WriteLine("InOrder traversal using universal method");
-        UniversalTraverse(IntegerBinaryTree, InOrder);
+        Console.WriteLine("InOrder traversal using Unified method");
+        UnifiedTraverse(IntegerBinaryTree, InOrder);
         
         Console.WriteLine();
         
-        Console.WriteLine("PostOrder traversal using universal method");
-        UniversalTraverse(IntegerBinaryTree, PostOrder);
+        Console.WriteLine("PostOrder traversal using Unified method");
+        UnifiedTraverse(IntegerBinaryTree, PostOrder);
     }
 
-    public static void TestElegantUniversalTraversal()
+    public static void TestElegantUnifiedTraversal()
     {
-        Console.WriteLine("PreOrder traversal using elegant universal method");
-        ElegantUniversalTraverse(IntegerBinaryTree, PreOrder);
+        Console.WriteLine("PreOrder traversal using elegant Unified method");
+        ElegantUnifiedTraverse(IntegerBinaryTree, PreOrder);
 
         Console.WriteLine();
 
-        Console.WriteLine("InOrder traversal using elegant universal method");
-        ElegantUniversalTraverse(IntegerBinaryTree, InOrder);
+        Console.WriteLine("InOrder traversal using elegant Unified method");
+        ElegantUnifiedTraverse(IntegerBinaryTree, InOrder);
 
         Console.WriteLine();
 
-        Console.WriteLine("PostOrder traversal using elegant universal method");
-        ElegantUniversalTraverse(IntegerBinaryTree, PostOrder);
+        Console.WriteLine("PostOrder traversal using elegant Unified method");
+        ElegantUnifiedTraverse(IntegerBinaryTree, PostOrder);
     }
 
     private static void PreOrderTraverse(BinaryTreeNode<int> root)
@@ -322,7 +322,7 @@ public static class BinaryTreeTraverser
      * 
      * 前中后序遍历的统一写法
      */
-    private static void UniversalTraverse(BinaryTreeNode<int> root, TraversalType traversalType)
+    private static void UnifiedTraverse(BinaryTreeNode<int> root, TraversalType traversalType)
     {
         var stack =  new Stack<BinaryTreeNode<int>>();
         var node = root;
@@ -402,7 +402,7 @@ public static class BinaryTreeTraverser
      * 如何标记呢，「就是要处理的节点放入栈之后，紧接着放入一个空指针作为标记。」
      * 这种方法也可以叫做标记法。
      */
-    private static void ElegantUniversalTraverse(BinaryTreeNode<int> root, TraversalType traversalType)
+    private static void ElegantUnifiedTraverse(BinaryTreeNode<int> root, TraversalType traversalType)
     {
         var stack =  new Stack<BinaryTreeNode<int>>([root]);
 
