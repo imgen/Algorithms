@@ -22,7 +22,7 @@ public static class EditDistance
             var newSolutions = new List<List<(int first, int second)>>();
             foreach (var solution in solutions)
             {
-                var indices = FindIndices(a[i], solution.Last().second);
+                var indices = FindIndices(a[i], solution[^1].second);
                 foreach(var index in indices)
                 {
                     var newSolution = solution

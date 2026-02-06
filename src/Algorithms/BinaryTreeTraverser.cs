@@ -1,43 +1,77 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
+﻿using System;
+using System.Collections.Generic;
 namespace Algorithms;
+
+using static BinaryTreeUtils;
+using static TraversalType;
 
 public static class BinaryTreeTraverser
 {
     public static void TestPreOrderTraversal()
     {
-        PreOrderTraverse(BinaryTreeUtils.IntegerBinaryTree);
+        PreOrderTraverse(IntegerBinaryTree);
     }
     
     public static void TestPreOrderTraversal2()
     {
-        PreOrderTraverse2(BinaryTreeUtils.IntegerBinaryTree);
+        PreOrderTraverse2(IntegerBinaryTree);
     }
     
     public static void TestInOrderTraversal()
     {
-        InOrderTraverse(BinaryTreeUtils.IntegerBinaryTree);
+        InOrderTraverse(IntegerBinaryTree);
     }
     
     public static void TestInOrderTraversal2()
     {
-        InOrderTraverse2(BinaryTreeUtils.IntegerBinaryTree);
+        InOrderTraverse2(IntegerBinaryTree);
     }
     
     public static void TestPostOrderTraversalWithFlag()
     {
-        PostOrderTraverseWithFlag(BinaryTreeUtils.IntegerBinaryTree);
+        PostOrderTraverseWithFlag(IntegerBinaryTree);
     }
     
     public static void TestPostOrderTraversalDoubleStack()
     {
-        PostOrderTraverseDoubleStack(BinaryTreeUtils.IntegerBinaryTree);
+        PostOrderTraverseDoubleStack(IntegerBinaryTree);
     }
     
     public static void TestPostOrderTraversalWithoutFlag()
     {
-        PostOrderTraverseWithoutFlag(BinaryTreeUtils.IntegerBinaryTree);
+        PostOrderTraverseWithoutFlag(IntegerBinaryTree);
+    }
+
+    public static void TestUniversalTraversal()
+    {
+        Console.WriteLine("PreOrder traversal using universal method");
+        UniversalTraverse(IntegerBinaryTree, PreOrder);
+        
+        Console.WriteLine();
+        
+        Console.WriteLine("InOrder traversal using universal method");
+        UniversalTraverse(IntegerBinaryTree, InOrder);
+        
+        Console.WriteLine();
+        
+        Console.WriteLine("PostOrder traversal using universal method");
+        UniversalTraverse(IntegerBinaryTree, PostOrder);
+    }
+
+    public static void TestElegantUniversalTraversal()
+    {
+        Console.WriteLine("PreOrder traversal using elegant universal method");
+        ElegantUniversalTraverse(IntegerBinaryTree, PreOrder);
+
+        Console.WriteLine();
+
+        Console.WriteLine("InOrder traversal using elegant universal method");
+        ElegantUniversalTraverse(IntegerBinaryTree, InOrder);
+
+        Console.WriteLine();
+
+        Console.WriteLine("PostOrder traversal using elegant universal method");
+        ElegantUniversalTraverse(IntegerBinaryTree, PostOrder);
     }
 
     private static void PreOrderTraverse(BinaryTreeNode<int> root)
@@ -279,6 +313,165 @@ public static class BinaryTreeTraverser
                 stack.Push(node);
                 // 指向右子节点，意味着下一个循环开始遍历右子树。
                 node = node.Right;
+            }
+        }
+    }
+
+    /*
+     * see https://zhuanlan.zhihu.com/p/80578741
+     * 
+     * 前中后序遍历的统一写法
+     */
+    private static void UniversalTraverse(BinaryTreeNode<int> root, TraversalType traversalType)
+    {
+        var stack =  new Stack<BinaryTreeNode<int>>();
+        var node = root;
+        // 用于记录上一次访问的节点
+        BinaryTreeNode<int> previousVisitedNode = null;
+        while (node is not null || stack.Count > 0)
+        {
+            while (node is not null)
+            {
+                stack.Push(node);
+                if (traversalType is PreOrder)
+                {
+                    node.Visit();
+                }
+                node = node.Left;
+            }
+
+            node = stack.Pop();
+            if (traversalType is InOrder)
+            {
+                // 中序遍历访问节点
+                node.Visit();
+            }
+            if (node.Right is null || 
+                (
+                    node.Right == previousVisitedNode && 
+                    traversalType is PostOrder
+                )
+            )
+                // 右子节点为null或上一次访问的节点为当前节点的右子节点。
+            {
+                if (traversalType is PostOrder)
+                {
+                    node.Visit();
+                    previousVisitedNode = node;
+                }
+                
+                // 此处为了跳过下一次循环的访问左子节点的过程，直接进入栈的弹出阶段，
+                // 因为但凡在栈中的节点，它们的左子节点都肯定被经过且已放入栈中。
+                node = null;
+            }
+            else // 有右子节点且尚未访问
+            {
+                // 还没到访问当前子树的根节点的时候，因此将已弹出的根节点重新放回栈中。
+                if (traversalType is PostOrder)
+                {
+                    stack.Push(node);
+                }
+
+                // 指向右子节点，意味着下一个循环开始遍历右子树。
+                node = node.Right;
+            }
+        }
+    }
+    
+    /*
+     * see https://zhuanlan.zhihu.com/p/260497281
+     *
+     * 前中后序遍历的统一写法
+     * 此时我们在二叉树：一入递归深似海，从此offer是路人中用递归的方式，实现了二叉树前中后序的遍历。
+     * 在二叉树：听说递归能做的，栈也能做！中用栈实现了二叉树前后中序的迭代遍历（非递归）。
+     * 之后我们发现「迭代法实现的先中后序，其实风格也不是那么统一，除了先序和后序，有关联，
+     * 中序完全就是另一个风格了，一会用栈遍历，一会又用指针来遍历。」
+     *
+     * 实践过的同学，也会发现使用迭代法实现先中后序遍历，很难写出统一的代码，不像是递归法，
+     * 实现了其中的一种遍历方式，其他两种只要稍稍改一下节点顺序就可以了。
+     *
+     * 其实「针对三种遍历方式，使用迭代法是可以写出统一风格的代码！」
+     *
+     * 「重头戏来了，接下来介绍一下统一写法。」
+     *
+     * 我们以中序遍历为例，在二叉树：听说递归能做的，栈也能做！中提到说使用栈的话，
+     * 「无法同时解决访问节点（遍历节点）和处理节点（将元素放进结果集）不一致的情况」。
+     *
+     * 「那我们就将访问的节点放入栈中，把要处理的节点也放入栈中但是要做标记。」
+     *
+     * 如何标记呢，「就是要处理的节点放入栈之后，紧接着放入一个空指针作为标记。」
+     * 这种方法也可以叫做标记法。
+     */
+    private static void ElegantUniversalTraverse(BinaryTreeNode<int> root, TraversalType traversalType)
+    {
+        var stack =  new Stack<BinaryTreeNode<int>>([root]);
+
+        BinaryTreeNode<int> PushNode(BinaryTreeNode<int> node)
+        {
+            // 节点入栈（空节点不入栈）
+            if (node is not null)
+            {
+                stack.Push(node); 
+            }
+            return node;
+        }
+
+        BinaryTreeNode<int> PushNodeAndNull(BinaryTreeNode<int> node)
+        {
+            PushNode(node);
+            stack.Push(null);
+            return node;
+        }
+
+        while (stack.Count > 0)
+        {
+            var node = stack.Peek();
+            if (node is not null)
+            {
+                // 将该节点弹出，避免重复操作，下面再将右中左节点添加到栈中
+                stack.Pop();
+
+                // 第一步
+                // 前序和中序遍历, 则压右节点入栈, 遍历顺序分别为中左右, 左中右
+                // 因中节点在最后, 故最先压栈
+                // 后序遍历, 则压中节点入栈, 遍历顺序是左右中
+                // 因中节点在最后, 故最先压栈
+                _ = traversalType switch
+                {
+                    PreOrder or InOrder => PushNode(node.Right), // 添加右节点（空节点不入栈)
+                    PostOrder => PushNodeAndNull(node), // 添加中节点, 中节点访问过，但是还没有处理，加入空节点做为标记。
+                    _ => null
+                };
+
+                // 第二步
+                // 前序遍历, 则压左节点入栈, 因其访问顺序是中左右, 左节点在中间
+                // 中序遍历, 则压中节点入栈, 因其访问顺序是左中右, 中节点在中间
+                // 后序遍历, 则压右节点入栈, 因其访问顺序是左右中, 右节点在中间
+                _ = traversalType switch
+                {
+                    PreOrder => PushNode(node.Left), // 添加左节点（空节点不入栈)
+                    InOrder => PushNodeAndNull(node), // 添加中节点, 中节点访问过，但是还没有处理，加入空节点做为标记。
+                    PostOrder => PushNode(node.Right), // 添加右节点（空节点不入栈)
+                    _ => null
+                };
+
+                // 第三步
+                // 若是前序遍历, 则压中节点入栈, 其访问顺序是中左右
+                // 因中节点在最前, 故最后入栈
+                // 中序遍历和后续遍历, 则压左节点入栈, 其访问顺序分别是左中右, 左右中
+                // 因左节点在最前, 故最后入栈
+                _ = traversalType switch
+                {
+                    PreOrder => PushNodeAndNull(node), // 添加中节点, 中节点访问过，但是还没有处理，加入空节点做为标记。
+                    InOrder or PostOrder => PushNode(node.Left), // 添加左节点（空节点不入栈),
+                    _ => null
+                };
+            }
+            else // 只有遇到空节点的时候，才访问下一个栈内节点
+            {
+                stack.Pop(); // 将空节点弹出
+                node = stack.Pop(); // 重新取出栈中节点
+                node.Visit(); // 访问该节点
             }
         }
     }

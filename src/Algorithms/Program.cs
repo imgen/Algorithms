@@ -1,4 +1,4 @@
 ﻿using Algorithms;
 
-BinaryTreeTraverser.TestPostOrderTraversalWithoutFlag();
+BinaryTreeTraverser.TestElegantUniversalTraversal();
 // EditDistanceV2.TestCalculateEditDistance();
